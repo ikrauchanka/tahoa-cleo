@@ -1,0 +1,32 @@
+from dateutil import parser
+and
+
+for snap in snaps:
+    limit = datetime.now() - timedelta(days=14)
+    if parser.parse(snap.start_time).date() <= limit.date():
+        #do your filter stuff here
+        print conn.delete_snapshot(snap.id)
+
+
+
+import boto
+import datetime
+import dateutil
+from dateutil import parser
+from boto import ec2
+ 
+connection=ec2.connect_to_region("REGION-NAME")
+ 
+ebsAllSnapshots=connection.get_all_snapshots(owner='16-DIGIT-AWS-ACCOUNT-NUMBER')
+ 
+#Get the 30 days old date
+timeLimit=datetime.datetime.now() - datetime.timedelta(days=30) 
+ 
+for snapshot in ebsAllSnapshots:
+     
+    if parser.parse(snapshot.start_time).date() <= timeLimit.date():
+        print " Deleting Snapshot %s  %s "  %(snapshot.id,snapshot.tags)
+        connection.delete_snapshot(snapshot.id)
+    else:
+        # this section will have all snapshots which is created before 30 days
+        print "Only Deleting Snapshots which is 30 days old"
